@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { deleteDownloadFile, fetchDownloadFiles } from '@/api/client'
+import { apiUrl } from '@/lib/api-base'
 import type { DownloadItem, DownloadedFile, PageDef } from '@/types'
 import { FoldersPanel, folderDotClass } from '@/components/FoldersPanel'
 import { useFolders } from '@/hooks/useFolders'
@@ -70,7 +71,7 @@ function triggerBrowserDownloads(filenames: string[], platform: string) {
   filenames.forEach((filename, i) => {
     setTimeout(() => {
       const a = document.createElement('a')
-      a.href = `/api/file/${platform}/${encodeURIComponent(filename)}`
+      a.href = apiUrl(`/api/file/${platform}/${encodeURIComponent(filename)}`)
       a.download = filename
       document.body.appendChild(a)
       a.click()
@@ -208,7 +209,7 @@ function FileCard({
       </div>
       {!selectionMode && !deleteMode && (
         <Button variant="secondary" size="sm" asChild>
-          <a href={`/api/file/${platform}/${encodeURIComponent(file.filename)}`} download={file.filename}>
+          <a href={apiUrl(`/api/file/${platform}/${encodeURIComponent(file.filename)}`)} download={file.filename}>
             <Download className="size-4" aria-hidden />
             Baixar
           </a>
@@ -263,13 +264,13 @@ export function DownloaderPage({ page }: { page: PageDef }) {
       return [...prev, ...fresh]
     })
     try {
-      const res = await fetch('/api/download/start', {
+      const res = await fetch(apiUrl('/api/download/start'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ urls: parsedUrls, platform: page.id, format, quality }),
       })
       const { job_id } = await res.json()
-      const es = new EventSource(`/api/download/stream/${job_id}`)
+      const es = new EventSource(apiUrl(`/api/download/stream/${job_id}`))
       esRef.current = es
       es.onmessage = e => {
         const ev = JSON.parse(e.data)

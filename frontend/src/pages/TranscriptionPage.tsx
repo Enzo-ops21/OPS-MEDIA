@@ -5,6 +5,7 @@ import { ptBR } from 'date-fns/locale'
 import { Check, ChevronDown, Clock, Copy, FileJson, Loader2, Mic, Play, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { deleteTranscriptionResult, fetchTranscriptionResults } from '@/api/client'
+import { apiUrl } from '@/lib/api-base'
 import type { TranscriptionItem } from '@/types'
 import { FoldersPanel, folderDotClass } from '@/components/FoldersPanel'
 import { useFolders } from '@/hooks/useFolders'
@@ -223,13 +224,13 @@ export function TranscriptionPage() {
       return [...(prev.length ? prev : saved), ...fresh]
     })
     try {
-      const res = await fetch('/api/start', {
+      const res = await fetch(apiUrl('/api/start'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ urls: parsedUrls, model, folder_id: activeFolderId }),
       })
       const { job_id } = await res.json()
-      const es = new EventSource(`/api/stream/${job_id}`)
+      const es = new EventSource(apiUrl(`/api/stream/${job_id}`))
       esRef.current = es
       es.onmessage = e => {
         const ev = JSON.parse(e.data)
@@ -264,7 +265,7 @@ export function TranscriptionPage() {
 
   async function handleReset() {
     if (!confirm('Apagar todas as transcrições? Esta ação não pode ser desfeita.')) return
-    await fetch('/api/results', { method: 'DELETE' })
+    await fetch(apiUrl('/api/results'), { method: 'DELETE' })
     setItems([])
   }
 

@@ -1,14 +1,15 @@
 import type { DownloadedFile, Folder, TranscriptionItem } from '@/types'
+import { apiUrl } from '@/lib/api-base'
 
 export async function fetchFolders(): Promise<Folder[]> {
-  const r = await fetch('/api/folders')
+  const r = await fetch(apiUrl('/api/folders'))
   if (!r.ok) throw new Error('Falha ao carregar pastas')
   const d = await r.json()
   return Object.values(d) as Folder[]
 }
 
 export async function fetchTranscriptionResults(): Promise<TranscriptionItem[]> {
-  const r = await fetch('/api/results')
+  const r = await fetch(apiUrl('/api/results'))
   if (!r.ok) throw new Error('Falha ao carregar resultados')
   const data: Record<string, TranscriptionItem & { error?: string }> = await r.json()
   return Object.entries(data).map(([url, v]) => ({
@@ -26,13 +27,13 @@ export async function fetchTranscriptionResults(): Promise<TranscriptionItem[]> 
 }
 
 export async function fetchDownloadFiles(platform: string): Promise<DownloadedFile[]> {
-  const r = await fetch(`/api/downloads/${platform}`)
+  const r = await fetch(apiUrl(`/api/downloads/${platform}`))
   if (!r.ok) throw new Error('Falha ao carregar arquivos')
   return r.json()
 }
 
 export async function createFolder(name: string, color: string) {
-  await fetch('/api/folders', {
+  await fetch(apiUrl('/api/folders'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, color }),
@@ -40,7 +41,7 @@ export async function createFolder(name: string, color: string) {
 }
 
 export async function renameFolder(id: string, name: string) {
-  await fetch(`/api/folders/${id}`, {
+  await fetch(apiUrl(`/api/folders/${id}`), {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name }),
@@ -48,11 +49,11 @@ export async function renameFolder(id: string, name: string) {
 }
 
 export async function deleteFolder(id: string) {
-  await fetch(`/api/folders/${id}`, { method: 'DELETE' })
+  await fetch(apiUrl(`/api/folders/${id}`), { method: 'DELETE' })
 }
 
 export async function deleteDownloadFile(platform: string, filename: string) {
-  const url = `/api/file/${encodeURIComponent(platform)}/${encodeURIComponent(filename)}`
+  const url = apiUrl(`/api/file/${encodeURIComponent(platform)}/${encodeURIComponent(filename)}`)
   let r: Response
   try {
     r = await fetch(url, { method: 'DELETE' })
@@ -68,6 +69,6 @@ export async function deleteDownloadFile(platform: string, filename: string) {
 }
 
 export async function deleteTranscriptionResult(url: string) {
-  const r = await fetch(`/api/results/${encodeURIComponent(url)}`, { method: 'DELETE' })
+  const r = await fetch(apiUrl(`/api/results/${encodeURIComponent(url)}`), { method: 'DELETE' })
   if (!r.ok) throw new Error('Falha ao excluir transcrição')
 }
