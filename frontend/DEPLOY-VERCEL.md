@@ -1,5 +1,7 @@
 # Deploy na Vercel — Opção B (`VITE_API_URL`)
 
+> **Antes:** suba a API no Railway seguindo o guia na raiz do repo: [`DEPLOY-RAILWAY.md`](../DEPLOY-RAILWAY.md)
+
 O frontend chama a API **diretamente** no Railway. Não usa rewrite de `/api` no `vercel.json`.
 
 ## 1. Configuração do projeto na Vercel
