@@ -31,7 +31,13 @@ No serviço criado, abra **Settings**:
 
 Em **Networking** → **Generate Domain** (ex.: `ops-media-production.up.railway.app`).
 
+Se aparecer **Unexposed service**, o deploy até pode estar ok, mas ninguém acessa de fora até você gerar o domínio.
+
 Copie essa URL — será o valor de `VITE_API_URL` na Vercel (sem barra no final).
+
+### Erro `'$PORT' is not a valid integer`
+
+O `startCommand` com `--port $PORT` sem shell passa o texto literal `$PORT` para o uvicorn. O repo usa o **Dockerfile** com `sh -c` e expansão `${PORT:-8000}`. Não defina um Start Command manual no painel que sobrescreva isso.
 
 ---
 
