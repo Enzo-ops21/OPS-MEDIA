@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Build
+frontend/dist/
+dist/
+
+# Dados locais / mídia baixada
+downloads/
+results.json
+folders.json
+links.txt
+
+# Ambiente e secrets
+.env
+.env.*
+*.local
+
+# IDE / ferramentas
+.claude/
+.cursor/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache Vite
+frontend/node_modules/.vite/
